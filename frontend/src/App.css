@@ -13,7 +13,8 @@
   color: #e5e7eb;
   box-sizing: border-box;
   position: relative;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 .app-shell::before {
@@ -110,8 +111,8 @@
   -webkit-backdrop-filter: blur(20px) saturate(180%);
   backdrop-filter: blur(20px) saturate(180%);
   border-radius: 1.5rem;
-  padding: 2.5rem 3rem;
-  max-width: 480px;
+  padding: 2rem 2.5rem;
+  max-width: 420px;
   width: 100%;
   box-shadow: 
     0 8px 32px rgba(0, 0, 0, 0.4),
@@ -119,6 +120,18 @@
   border: 1px solid rgba(255, 255, 255, 0.1);
   position: relative;
   z-index: 1;
+  animation: cardFadeIn 0.5s ease-out;
+}
+
+@keyframes cardFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 .card::before {
@@ -139,10 +152,10 @@
 }
 
 .card h2 {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.2rem;
   font-family: 'Inter', sans-serif;
   font-weight: 600;
-  font-size: 1.75rem;
+  font-size: 1.5rem;
   color: #ffffff;
   text-align: center;
 }
@@ -150,7 +163,7 @@
 .form {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 0.75rem;
 }
 
 .form label {
@@ -164,16 +177,17 @@
 .form input,
 .form select {
   width: 100%;
-  padding: 0.75rem 1rem;
-  border-radius: 0.75rem;
+  padding: 0.6rem 0.9rem;
+  border-radius: 0.65rem;
   border: 1px solid rgba(255, 255, 255, 0.15);
   background: rgba(10, 10, 20, 0.6);
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
   color: #ffffff;
   font-family: 'Inter', sans-serif;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   transition: all 0.3s ease;
+  box-sizing: border-box;
 }
 
 .form input::placeholder {

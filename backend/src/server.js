@@ -17,8 +17,7 @@ const isProduction = process.env.NODE_ENV === "production";
 // CORS: Allow localhost and any onrender.com subdomain
 const allowedOrigins = [
   "http://localhost:5173",
-  "https://kodbankingg-app.onrender.com",
-  "https://kodbank-app-tlvi.onrender.com",
+  "https://kodbank-ge7g.onrender.com",
 ];
 
 app.use(
