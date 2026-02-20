@@ -18,6 +18,7 @@ const isProduction = process.env.NODE_ENV === "production";
 const allowedOrigins = [
   "http://localhost:5173",
   "https://kodbankingg-app.onrender.com",
+  "https://kodbank-app-tlvi.onrender.com",
 ];
 
 if (process.env.FRONTEND_URL) {
