@@ -15,7 +15,7 @@ export default defineConfig({
     },
   },
   build: {
-    outDir: '../dist',
-    emptyOutDir: true,
+    // Standard Vite output to 'dist' inside frontend folder
+    outDir: 'dist',
   },
 })
