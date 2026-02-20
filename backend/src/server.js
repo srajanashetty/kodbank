@@ -4,6 +4,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import path from "path";
 import { fileURLToPath } from "url";
+import { existsSync } from "fs";
 import { testConnection } from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
@@ -31,13 +32,15 @@ app.get("/api/ping", (req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
 
-// In production, serve frontend static files and SPA fallback
+// In production, serve frontend static files and SPA fallback (when frontend is built)
 if (isProduction) {
   const frontendDist = path.resolve(__dirname, "../../frontend/dist");
-  app.use(express.static(frontendDist));
-  app.get("*", (req, res) => {
-    res.sendFile(path.join(frontendDist, "index.html"));
-  });
+  if (existsSync(frontendDist)) {
+    app.use(express.static(frontendDist));
+    app.get("/{*splat}", (req, res) => {
+      res.sendFile(path.join(frontendDist, "index.html"));
+    });
+  }
 }
 
 app.listen(PORT, async () => {
