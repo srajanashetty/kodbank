@@ -42,7 +42,7 @@ app.use(cookieParser());
 
 // Simple version check to confirm deployment
 app.get("/api/version", (req, res) => {
-  res.json({ version: "1.0.1", deployedAt: new Date().toISOString() });
+  res.json({ version: "1.0.2", deployedAt: new Date().toISOString(), cors: "any-onrender-allowed" });
 });
 
 app.get("/api/ping", (req, res) => {
