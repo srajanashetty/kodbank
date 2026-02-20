@@ -88,7 +88,7 @@ router.post("/login", async (req, res) => {
 
     const cookieOptions = {
       httpOnly: true,
-      sameSite: "lax",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
       secure: process.env.NODE_ENV === "production",
       expires: expiry,
       path: "/",
@@ -111,11 +111,12 @@ router.post("/login", async (req, res) => {
 // POST /api/auth/logout
 router.post("/logout", async (req, res) => {
   const isProduction = process.env.NODE_ENV === "production";
+  const sameSiteValue = isProduction ? "none" : "lax";
   const secureFlag = isProduction ? "; Secure" : "";
-  const clearCookieHeader = `auth_token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Max-Age=0; HttpOnly; SameSite=Lax${secureFlag}`;
+  const clearCookieHeader = `auth_token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Max-Age=0; HttpOnly; SameSite=${sameSiteValue}${secureFlag}`;
   const clearCookieOptions = {
     httpOnly: true,
-    sameSite: "lax",
+    sameSite: sameSiteValue,
     secure: isProduction,
     path: "/",
     maxAge: 0,
@@ -123,7 +124,7 @@ router.post("/logout", async (req, res) => {
 
   try {
     const token = req.cookies?.auth_token;
-    
+
     // Delete token from database FIRST - CRITICAL: invalidates token immediately
     if (token) {
       const deleted = await deleteTokenByToken(token);
@@ -135,7 +136,7 @@ router.post("/logout", async (req, res) => {
     // Clear cookie using multiple methods to ensure it's removed
     res.setHeader("Set-Cookie", clearCookieHeader);
     res.clearCookie("auth_token", clearCookieOptions);
-    
+
     // Set empty cookie with expired date as additional safeguard
     res.cookie("auth_token", "", {
       ...clearCookieOptions,

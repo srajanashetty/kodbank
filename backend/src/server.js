@@ -14,11 +14,19 @@ const app = express();
 const PORT = process.env.PORT || 4000;
 const isProduction = process.env.NODE_ENV === "production";
 
-// CORS: use FRONTEND_URL in production, localhost in development
-const corsOrigin = process.env.FRONTEND_URL || "http://localhost:5173";
+// CORS: Allow both localhost (dev) and production frontend
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://kodbankingg-app.onrender.com",
+];
+
+if (process.env.FRONTEND_URL) {
+  allowedOrigins.push(process.env.FRONTEND_URL);
+}
+
 app.use(
   cors({
-    origin: corsOrigin,
+    origin: allowedOrigins,
     credentials: true,
   })
 );
