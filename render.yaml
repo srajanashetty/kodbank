@@ -1,4 +1,4 @@
-# Render Blueprint - Backend service configuration
+# Render Blueprint - Backend + Frontend
 # https://render.com/docs/blueprint-spec
 
 services:
@@ -17,3 +17,14 @@ services:
         generateValue: true
       - key: FRONTEND_URL
         sync: false
+
+  - type: web
+    name: kodbank-frontend
+    runtime: static
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: frontend/dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
