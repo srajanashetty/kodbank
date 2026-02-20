@@ -37,6 +37,7 @@ function RegisterPage() {
       const res = await fetch(`${API_BASE}/api/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ ...form, role: form.role || 'Customer' }),
       })
       const text = await res.text()
