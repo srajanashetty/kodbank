@@ -11,7 +11,7 @@ function RegisterPage() {
     password: '',
     email: '',
     phone: '',
-    role: 'Customer',
+    role: '',
   })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -27,8 +27,8 @@ function RegisterPage() {
     setError('')
     setSuccess('')
 
-    if (!form.uid || !form.uname || !form.password || !form.email || !form.phone) {
-      setError('All fields are required.')
+    if (!form.uid || !form.uname || !form.password || !form.email || !form.phone || !form.role) {
+      setError('All fields are required. Please select a role.')
       return
     }
 
@@ -37,16 +37,25 @@ function RegisterPage() {
       const res = await fetch(`${API_BASE}/api/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ ...form, role: form.role || 'Customer' }),
       })
-      const data = await res.json()
+      const text = await res.text()
+      let data = {}
+      if (text) {
+        try {
+          data = JSON.parse(text)
+        } catch {
+          setError('Server returned an invalid response. Is the backend running?')
+          return
+        }
+      }
       if (!res.ok) {
         throw new Error(data.message || 'Registration failed')
       }
       setSuccess('Registered successfully! Redirecting to login...')
       setTimeout(() => navigate('/login'), 1200)
     } catch (err) {
-      setError(err.message)
+      setError(err.message || 'Unable to reach server. Please try again later.')
     } finally {
       setLoading(false)
     }
@@ -105,7 +114,8 @@ function RegisterPage() {
         </label>
         <label>
           Role
-          <select name="role" value={form.role} disabled>
+          <select name="role" value={form.role} onChange={handleChange} required>
+            <option value="">Select role</option>
             <option value="Customer">Customer</option>
           </select>
         </label>

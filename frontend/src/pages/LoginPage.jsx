@@ -9,10 +9,12 @@ function LoginPage() {
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [success, setSuccess] = useState('')
 
   async function handleSubmit(e) {
     e.preventDefault()
     setError('')
+    setSuccess('')
 
     if (!username || !password) {
       setError('Username and password are required.')
@@ -27,13 +29,23 @@ function LoginPage() {
         credentials: 'include',
         body: JSON.stringify({ username, password }),
       })
-      const data = await res.json()
+      const text = await res.text()
+      let data = {}
+      if (text) {
+        try {
+          data = JSON.parse(text)
+        } catch {
+          setError('Server returned an invalid response. Is the backend running?')
+          return
+        }
+      }
       if (!res.ok) {
         throw new Error(data.message || 'Login failed')
       }
-      navigate('/dashboard')
+      setSuccess('Login successful! Redirecting to dashboard...')
+      setTimeout(() => navigate('/dashboard'), 1200)
     } catch (err) {
-      setError(err.message)
+      setError(err.message || 'Unable to reach server. Please try again later.')
     } finally {
       setLoading(false)
     }
@@ -61,6 +73,7 @@ function LoginPage() {
           />
         </label>
         {error && <p className="error">{error}</p>}
+        {success && <p className="success">{success}</p>}
         <button type="submit" disabled={loading}>
           {loading ? 'Logging in...' : 'Login'}
         </button>

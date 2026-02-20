@@ -137,8 +137,17 @@ function DashboardPage() {
         return
       }
       
-      // Only parse JSON if status is not 401
-      const data = await res.json()
+      // Parse JSON safely - handle empty or invalid response
+      const text = await res.text()
+      let data = {}
+      if (text) {
+        try {
+          data = JSON.parse(text)
+        } catch {
+          setError('Server returned an invalid response. Is the backend running?')
+          return
+        }
+      }
       
       // Double-check: if response is not OK, don't show balance
       if (!res.ok || res.status !== 200) {

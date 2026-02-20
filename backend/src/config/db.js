@@ -1,7 +1,4 @@
 import mysql from "mysql2/promise";
-import dotenv from "dotenv";
-
-dotenv.config();
 
 const DB_URL = process.env.AIVEN_DB_URL;
 if (!DB_URL) {

@@ -46,7 +46,11 @@ router.post("/register", async (req, res) => {
       .json({ message: "Registered successfully, please login." });
   } catch (err) {
     console.error("Register error:", err);
-    return res.status(500).json({ message: "Registration failed" });
+    const message =
+      process.env.NODE_ENV === "development" && err.message
+        ? err.message
+        : "Registration failed";
+    return res.status(500).json({ message });
   }
 });
 
@@ -96,7 +100,11 @@ router.post("/login", async (req, res) => {
       .json({ message: "Login successful" });
   } catch (err) {
     console.error("Login error:", err);
-    return res.status(500).json({ message: "Login failed" });
+    const message =
+      process.env.NODE_ENV === "development" && err.message
+        ? err.message
+        : "Login failed";
+    return res.status(500).json({ message });
   }
 });
 

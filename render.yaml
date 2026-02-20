@@ -1,0 +1,19 @@
+# Render Blueprint - Backend service configuration
+# https://render.com/docs/blueprint-spec
+
+services:
+  - type: web
+    name: kodbank-backend
+    rootDir: backend
+    runtime: node
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: AIVEN_DB_URL
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: FRONTEND_URL
+        sync: false

@@ -1,19 +1,23 @@
+import "./loadenv.js";
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import dotenv from "dotenv";
+import path from "path";
+import { fileURLToPath } from "url";
 import { testConnection } from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 
-dotenv.config();
-
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
 const PORT = process.env.PORT || 4000;
+const isProduction = process.env.NODE_ENV === "production";
 
+// CORS: use FRONTEND_URL in production, localhost in development
+const corsOrigin = process.env.FRONTEND_URL || "http://localhost:5173";
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: corsOrigin,
     credentials: true,
   })
 );
@@ -26,6 +30,15 @@ app.get("/api/ping", (req, res) => {
 
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
+
+// In production, serve frontend static files and SPA fallback
+if (isProduction) {
+  const frontendDist = path.resolve(__dirname, "../../frontend/dist");
+  app.use(express.static(frontendDist));
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(frontendDist, "index.html"));
+  });
+}
 
 app.listen(PORT, async () => {
   try {
